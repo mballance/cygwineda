@@ -7,18 +7,21 @@ RULES:=true
 
 all : 
 	@echo "Available targets:"
-	@echo "  build       - build all packages"
-	@echo "  list_pkgs   - list the availble packages"
+	@echo "  all-pkgs    - build all packages"
+	@echo "  core-pkgs   - build core packages"
+	@echo "  list-pkgs   - list the availble packages"
 	@echo "  <package>   - build specific package"
 	@echo "  clean-all   - remove everything"
 	@echo "  clean-pkg   - remove result packages"
 	@echo "  clean-build - remove package builds"
 
-build : $(PACKAGE_RESULTS)
+all-pkgs : core-pkgs
 
-list_pkgs : 
-	@echo "Available Packages:"
-	@for pkg in $(PACKAGE_NAMES); do \
+core-pkgs : $(CORE_PACKAGE_RESULTS)
+
+list-pkgs : 
+	@echo "Core Packages:"
+	@for pkg in $(CORE_PACKAGE_NAMES); do \
 	echo "  $$pkg"; \
 	done
 

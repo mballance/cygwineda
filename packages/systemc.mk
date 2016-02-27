@@ -9,8 +9,8 @@ SYSTEMC_SRC_PKG := $(PKG_SRC_DIR)/systemc-$(SYSTEMC_VERSION).tar.gz
 SYSTEMC_PKG := $(PKG_RESULT_DIR)/$(SYSTEMC_PKGNAME).tar.bz2
 SYSTEMC_PKG_DIR := $(subst .tar.bz2,,$(SYSTEMC_PKG))
 SYSTEMC_BUILDDIR := $(BUILD_DIR)/systemc-$(SYSTEMC_VERSION)
-PACKAGE_RESULTS += $(SYSTEMC_PKG)
-PACKAGE_NAMES += systemc
+CORE_PACKAGE_RESULTS += $(SYSTEMC_PKG)
+CORE_PACKAGE_NAMES += systemc
 
 else
 
@@ -31,7 +31,7 @@ $(SYSTEMC_PKG) : $(BUILD_DIR)/systemc.build
 	$(Q)cd $(SYSTEMC_PKG_DIR) ; $(TARBZ) $@ *
 	$(Q)rm -rf $(SYSTEMC_PKG_DIR)
 
-$(BUILD_DIR)/systemc.build : $(SYSTEMC_SRC_PKG) mkdirs
+$(BUILD_DIR)/systemc.build : $(SYSTEMC_SRC_PKG) $(MKDIRS)
 	$(Q)echo "Unpacking $(SYSTEMC_SRC_PKG)"
 	$(Q)rm -rf $(SYSTEMC_BUILDDIR)
 	$(Q)cd $(BUILD_DIR) ; $(UNTARGZ) $(SYSTEMC_SRC_PKG)
