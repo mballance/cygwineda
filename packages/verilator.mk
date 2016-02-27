@@ -46,6 +46,7 @@ $(BUILD_DIR)/verilator.build : $(VERILATOR_SRC_PKG) mkdirs
 	$(Q)cd $(VERILATOR_BUILDDIR) ; $(MAKE)
 	$(Q)echo "Installing $(VERILATOR_PKGNAME)"
 	$(Q)cd $(VERILATOR_BUILDDIR) ; $(MAKE) install
+	$(Q)touch $@
 	
 verilator : $(VERILATOR_PKG)
 
