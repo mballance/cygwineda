@@ -15,7 +15,8 @@ CORE_PACKAGE_NAMES += verilator
 else
 
 # Rules for packages
-$(VERILATOR_SRC_PKG) : $(MKDIRS)
+$(VERILATOR_SRC_PKG) : 
+	$(Q)$(MK_PKG_SRC_DIR)
 	$(Q)echo "Download $(VERILATOR_SRC_PKG)"
 	$(Q)if test ! -d `dirname $@`; then mkdir -p `dirname $@`; fi
 	$(Q)$(WGET) -O $@ $(VERILATOR_URL)
@@ -29,18 +30,20 @@ $(VERILATOR_PKG) : $(BUILD_DIR)/verilator.build
 	$(Q)cd $(VERILATOR_PKG_DIR) ; $(TARBZ) $@ *
 	$(Q)rm -rf $(VERILATOR_PKG_DIR)
 
-$(BUILD_DIR)/verilator.build : $(VERILATOR_SRC_PKG) $(MKDIRS)
+$(BUILD_DIR)/verilator.build : $(VERILATOR_SRC_PKG) $(PKGS_DIR)/verilator.patch $(MKDIRS)
 	$(Q)echo "Unpacking $(VERILATOR_PKGNAME)"
 	$(Q)rm -rf $(VERILATOR_BUILDDIR)
 	$(Q)cd $(BUILD_DIR) ; $(UNTARGZ) $(VERILATOR_SRC_PKG)
+	$(Q)echo "Patching $(VERILATOR_PKGNAME)"
+	$(Q)cd $(VERILATOR_BUILDDIR); patch -p1 < $(PKGS_DIR)/verilator.patch
 # Sometimes the first configuration fails
 	$(Q)echo "Configuring $(VERILATOR_PKGNAME)"
 	-$(Q)cd $(VERILATOR_BUILDDIR) ; ./configure --prefix=$(VERILATOR_BUILDDIR)/installdir
-	$(Q)cd $(VERILATOR_BUILDDIR) ; if test ! -f Makefile; then echo "Trying again (1)"; \
+	-$(Q)cd $(VERILATOR_BUILDDIR) ; if test ! -f Makefile; then echo "Trying again (1)"; \
 	    ./configure --prefix=$(VERILATOR_BUILDDIR)/installdir; fi
-	$(Q)cd $(VERILATOR_BUILDDIR) ; if test ! -f Makefile; then echo "Trying again (2)"; \
+	-$(Q)cd $(VERILATOR_BUILDDIR) ; if test ! -f Makefile; then echo "Trying again (2)"; \
 	    ./configure --prefix=$(VERILATOR_BUILDDIR)/installdir; fi
-	$(Q)cd $(VERILATOR_BUILDDIR) ; if test ! -f Makefile; then echo "Trying again (3)"; \
+	-$(Q)cd $(VERILATOR_BUILDDIR) ; if test ! -f Makefile; then echo "Trying again (3)"; \
 	    ./configure --prefix=$(VERILATOR_BUILDDIR)/installdir; fi
 	$(Q)cd $(VERILATOR_BUILDDIR) ; if test ! -f Makefile; then echo "Trying again (4)"; \
 	    ./configure --prefix=$(VERILATOR_BUILDDIR)/installdir; fi

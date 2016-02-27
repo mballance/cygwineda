@@ -3,3 +3,6 @@ The following Cygwin packages must be installed:
 - bison
 - flex
 - perl
+- patchutils
+- wget
+
