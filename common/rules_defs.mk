@@ -42,6 +42,6 @@ $(PKG_SRC_DIR) :
 $(PKG_RESULT_DIR) :
 	$(Q)mkdir -p $(@)
 
-$(MKDIRS) : $(BUILD_DIR) $(PKG_SRC_DIR) $(PKG_RESULT_DIR)
+mkdirs : $(BUILD_DIR) $(PKG_SRC_DIR) $(PKG_RESULT_DIR)
 
 endif

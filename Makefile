@@ -14,7 +14,7 @@ all :
 	@echo "  clean-pkg   - remove result packages"
 	@echo "  clean-build - remove package builds"
 
-build : build_packages.stamp
+build : $(PACKAGE_RESULTS)
 
 list_pkgs : 
 	@echo "Available Packages:"
@@ -22,10 +22,6 @@ list_pkgs :
 	echo "  $$pkg"; \
 	done
 
-
-# fetch_packages.stamp : $(PACKAGES)
-
-build_packages.stamp : $(BUILD_PACKAGES_STAMPS)
 
 include packages/*.mk
 include common/rules_defs.mk

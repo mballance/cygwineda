@@ -2,15 +2,14 @@
 ifneq (true,$(RULES))
 
 # Definitions for packages
-# SYSTEMC_URL := https://github.com/systemc/systemc-2.3/archive/master.zip
 SYSTEMC_VERSION := 2.3.1
-SYSTEMC_URL := http://www.accellera.org/images/downloads/standards/systemc/systemc-2.3.1.tgz
-SYSTEMC_SRC_PKG := $(PKG_SRC_DIR)/systemc-2.3.1.tar.gz
-SYSTEMC_PKG := $(PKG_RESULT_DIR)/systemc-2.3.1.tar.bz2
+SYSTEMC_PKGNAME := systemc-$(SYSTEMC_VERSION)
+SYSTEMC_URL := http://www.accellera.org/images/downloads/standards/systemc/systemc-$(SYSTEMC_VERSION).tgz
+SYSTEMC_SRC_PKG := $(PKG_SRC_DIR)/systemc-$(SYSTEMC_VERSION).tar.gz
+SYSTEMC_PKG := $(PKG_RESULT_DIR)/$(SYSTEMC_PKGNAME).tar.bz2
 SYSTEMC_PKG_DIR := $(subst .tar.bz2,,$(SYSTEMC_PKG))
-SYSTEMC_BUILDDIR := $(BUILD_DIR)/systemc-2.3.1
-PACKAGES += $(SYSTEMC_SRC_PKG) 
-PACKAGE_RESULTS += $(PKG_RESULT_DIR)/systemc-2.3.1.tar.gz
+SYSTEMC_BUILDDIR := $(BUILD_DIR)/systemc-$(SYSTEMC_VERSION)
+PACKAGE_RESULTS += $(SYSTEMC_PKG)
 PACKAGE_NAMES += systemc
 
 else
@@ -32,7 +31,7 @@ $(SYSTEMC_PKG) : $(BUILD_DIR)/systemc.build
 	$(Q)cd $(SYSTEMC_PKG_DIR) ; $(TARBZ) $@ *
 	$(Q)rm -rf $(SYSTEMC_PKG_DIR)
 
-$(BUILD_DIR)/systemc.build : $(SYSTEMC_SRC_PKG) $(MKDIRS)
+$(BUILD_DIR)/systemc.build : $(SYSTEMC_SRC_PKG) mkdirs
 	$(Q)echo "Unpacking $(SYSTEMC_SRC_PKG)"
 	$(Q)rm -rf $(SYSTEMC_BUILDDIR)
 	$(Q)cd $(BUILD_DIR) ; $(UNTARGZ) $(SYSTEMC_SRC_PKG)
