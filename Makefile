@@ -9,19 +9,26 @@ all :
 	@echo "Available targets:"
 	@echo "  all-pkgs    - build all packages"
 	@echo "  core-pkgs   - build core packages"
+	@echo "  gcc-pkgs    - build cross compiler packages"
 	@echo "  list-pkgs   - list the availble packages"
 	@echo "  <package>   - build specific package"
 	@echo "  clean-all   - remove everything"
 	@echo "  clean-pkg   - remove result packages"
 	@echo "  clean-build - remove package builds"
 
-all-pkgs : core-pkgs
+all-pkgs : core-pkgs gcc-pkgs
 
 core-pkgs : $(CORE_PACKAGE_RESULTS)
+
+gcc-pkgs : $(GCC_PACKAGE_RESULTS)
 
 list-pkgs : 
 	@echo "Core Packages:"
 	@for pkg in $(CORE_PACKAGE_NAMES); do \
+	echo "  $$pkg"; \
+	done
+	@echo "GCC Packages:"
+	@for pkg in $(GCC_PACKAGE_NAMES); do \
 	echo "  $$pkg"; \
 	done
 

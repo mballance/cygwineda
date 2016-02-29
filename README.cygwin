@@ -5,4 +5,6 @@ The following Cygwin packages must be installed:
 - perl
 - patchutils
 - wget
-
+- libgmp (dev)
+- libmpfr (dev)
+- libmpc (dev)
