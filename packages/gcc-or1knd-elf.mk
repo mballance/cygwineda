@@ -100,23 +100,8 @@ $(BUILD_DIR)/gcc-or1knd-elf/binutils.build : $(GCC_OR1KND_ELF_BINUTILS_PKG)
 	    --disable-rda --disable-sid --disable-sim --with-sysroot
 	$(Q)cd $(BUILD_DIR)/gcc-or1knd-elf/binutils-2.25 ; $(MAKE) 
 	$(Q)cd $(BUILD_DIR)/gcc-or1knd-elf/binutils-2.25 ; $(MAKE) install
+	$(Q)rm -rf $(BUILD_DIR)/gcc-or1knd-elf/binutils-2.25
 	$(Q)touch $@
-	
-#	$(Q)rm -rf $(BUILD_DIR)/gcc-or1knd-elf/or1k-src-or1k
-#	$(Q)rm -rf $(BUILD_DIR)/gcc-or1knd-elf/binutils
-#	$(Q)mkdir -p $(BUILD_DIR)/gcc-or1knd-elf/binutils
-#	$(Q)cd $(BUILD_DIR)/gcc-or1knd-elf ; $(UNZIP) $^
-#	$(Q)echo "Configuring binutils"
-#	$(Q)cd $(BUILD_DIR)/gcc-or1knd-elf/binutils; \
-#	  ../or1k-src-or1k/configure --target=$(GCC_OR1KND_ELF_TARGET) \
-#	    --prefix=$(BUILD_DIR)/gcc-or1knd-elf/installdir \
-#	    --enable-shared --disable-itcl --disable-tk --disable-tcl \
-#	    --disable-libgui --disable-rda --disable-sid --disable-sim \
-#	    --disable-gdb --with-sysroot --enable-newlib --disable-libgloss \
-#	    --disable-werror --disable-newlib
-#	$(Q)cd $(BUILD_DIR)/gcc-or1knd-elf/binutils; make
-#	$(Q)cd $(BUILD_DIR)/gcc-or1knd-elf/binutils; make install
-#	$(Q)touch $@
 	
 $(BUILD_DIR)/gcc-or1knd-elf/gcc_phase1.build : \
 		$(BUILD_DIR)/gcc-or1knd-elf/binutils.build \
@@ -125,11 +110,6 @@ $(BUILD_DIR)/gcc-or1knd-elf/gcc_phase1.build : \
 	$(Q)echo "Unpacking or1k-gcc (gcc)"
 	$(Q)rm -rf $(BUILD_DIR)/gcc-or1knd-elf/or1k-gcc-or1k
 	$(Q)cd $(BUILD_DIR)/gcc-or1knd-elf ; $(UNZIP) $(GCC_OR1KND_ELF_OR1K_GCC_PKG)
-#	$(Q)echo "Unpacking newlib"
-#	$(Q)rm -rf $(BUILD_DIR)/gcc-or1knd-elf/newlib-2.2.0.20150225
-#	$(Q)cd $(BUILD_DIR)/gcc-or1knd-elf; $(UNTARGZ) $(GCC_OR1KND_ELF_NEWLIB_PKG)
-#	$(Q)cd $(BUILD_DIR)/gcc-or1knd-elf/newlib-2.2.0.20150225; \
-#	    cp -r libgloss newlib ../or1k-gcc-or1k
 	$(Q)echo "Configuring GCC"
 	$(Q)rm -rf $(BUILD_DIR)/gcc-or1knd-elf/gcc
 	$(Q)mkdir $(BUILD_DIR)/gcc-or1knd-elf/gcc
@@ -146,6 +126,7 @@ $(BUILD_DIR)/gcc-or1knd-elf/gcc_phase1.build : \
 	    export PATH="$(BUILD_DIR)/gcc-or1knd-elf/installdir/bin:$(PATH)"; $(MAKE)
 	$(Q)cd $(BUILD_DIR)/gcc-or1knd-elf/gcc ; \
 	    export PATH="$(BUILD_DIR)/gcc-or1knd-elf/installdir/bin:$(PATH)"; $(MAKE) install
+	$(Q)rm -rf $(BUILD_DIR)/gcc-or1knd-elf/gcc
 	$(Q)touch $@
 
 $(BUILD_DIR)/gcc-or1knd-elf/newlib.build : \
@@ -165,6 +146,7 @@ $(BUILD_DIR)/gcc-or1knd-elf/newlib.build : \
 	$(Q)echo "Installing newlib"
 	$(Q)cd $(BUILD_DIR)/gcc-or1knd-elf/newlib-2.2.0.20150225 ; \
 	    export PATH="$(BUILD_DIR)/gcc-or1knd-elf/installdir/bin:$(PATH)"; $(MAKE) install
+	$(Q)rm -rf $(BUILD_DIR)/gcc-or1knd-elf/newlib-2.2.0.20150225
 	$(Q)touch $@
 	
 $(BUILD_DIR)/gcc-or1knd-elf/gcc_phase2.build : \
@@ -181,6 +163,7 @@ $(BUILD_DIR)/gcc-or1knd-elf/gcc_phase2.build : \
 	$(Q)echo "Installing gcc phase2"
 	$(Q)cd $(BUILD_DIR)/gcc-or1knd-elf/gcc-phase2; \
 	    export PATH="$(BUILD_DIR)/gcc-or1knd-elf/installdir/bin:$(PATH)"; $(MAKE) install
+	$(Q)rm -rf $(BUILD_DIR)/gcc-or1knd-elf/gcc-phase2
 	$(Q)touch $@
 	
 $(BUILD_DIR)/gcc-or1knd-elf.build : \

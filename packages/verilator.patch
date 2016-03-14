@@ -1,6 +1,6 @@
-diff -rcNB verilator-3.880/include/verilated.cpp verilator-3.880.1/include/verilated.cpp
+diff -rcNB verilator-3.880/include/verilated.cpp verilator-3.880.new/include/verilated.cpp
 *** verilator-3.880/include/verilated.cpp	2015-11-28 15:36:06.000000000 -0800
---- verilator-3.880.1/include/verilated.cpp	2016-02-27 14:59:32.824149300 -0800
+--- verilator-3.880.new/include/verilated.cpp	2016-03-04 10:06:52.234830200 -0800
 ***************
 *** 97,107 ****
   // Random reset -- Only called at init time, so don't inline.
@@ -35,3 +35,157 @@ diff -rcNB verilator-3.880/include/verilated.cpp verilator-3.880.1/include/veril
   #endif
   }
   
+diff -rcNB verilator-3.880/include/verilated_vcd_c.cpp verilator-3.880.new/include/verilated_vcd_c.cpp
+*** verilator-3.880/include/verilated_vcd_c.cpp	2015-11-28 15:36:06.000000000 -0800
+--- verilator-3.880.new/include/verilated_vcd_c.cpp	2016-03-04 10:07:31.576764000 -0800
+***************
+*** 35,40 ****
+--- 35,41 ----
+  # include <io.h>
+  #else
+  # include <unistd.h>
++ # include <sys/wait.h>
+  #endif
+  
+  // SPDIFF_ON
+***************
+*** 79,91 ****
+--- 80,164 ----
+  //=============================================================================
+  // VerilatedVcdFile
+  
++ VerilatedVcdFile::VerilatedVcdFile() : m_fd(0) {
++ #ifndef _WIN32
++   m_pid = -1;
++ #endif
++ }
++ 
+  bool VerilatedVcdFile::open(const string& name) {
+      m_fd = ::open(name.c_str(), O_CREAT|O_WRONLY|O_TRUNC|O_LARGEFILE|O_NONBLOCK, 0666);
+      return (m_fd>=0);
+  }
+  
++ bool VerilatedVcdFile::popen(const string& name) {
++ #ifndef _WIN32
++     int pipefd[2]; 
++ 
++     if (::pipe(pipefd) < 0) {
++         fprintf(stderr, "Error: pipe failed\n");
++         return false;
++     }
++     
++     if ((m_pid = fork()) > 0) {
++         // parent
++         m_fd = pipefd[1];
++         ::close(pipefd[0]);
++     } else if (m_pid < 0) {
++         fprintf(stderr, "Error: fork failed\n");
++         m_fd = 0;
++     } else {
++         // child
++         char *argv[64];
++         const char *cmd = 0;
++         char *name_s = strdup(name.c_str());
++         int  argv_idx = 0;
++ 
++         // Split up command
++         while (*name_s) {
++             // skip whitespace
++             while (*name_s && isspace(*name_s)) {
++                 name_s++;
++             }
++ 
++             if (*name_s) {
++                 if (argv_idx == 0) { // Save the root argument
++                     cmd = name_s;
++                 }
++                 argv[argv_idx++] = name_s;
++                 // skip non-whitespace
++                 while (*name_s && !isspace(*name_s)) {
++                     name_s++;
++                 }
++                 // Terminate string
++                 if (*name_s) {
++                     *name_s = 0;
++                     name_s++;
++                 }
++             }
++         
++         }
++         argv[argv_idx] = 0;
++ 
++         // Redirect process input
++         ::close(pipefd[1]);
++         ::dup2(pipefd[0], 0);
++         ::close(pipefd[0]);
++ 
++         ::execvp(cmd, argv);
++     }
++ #endif
++     return (m_fd>=0);
++ }
++ 
+  void VerilatedVcdFile::close() {
+      ::close(m_fd);
++ #ifndef _WIN32
++     if (m_pid > 0) {
++         int status;
++         ::waitpid(m_pid, &status, 0);
++     }
++ #endif
+  }
+  
+  ssize_t VerilatedVcdFile::write(const char* bufp, ssize_t len) {
+***************
+*** 174,180 ****
+--- 247,264 ----
+  	m_filename = name;
+      }
+      if (m_filename[0]=='|') {
++ #ifdef _WIN32
+  	assert(0);	// Not supported yet.
++ #else
++ 	const char *filename_c = m_filename.c_str();
++ 
++ 	if (!m_filep->popen(&filename_c[1])) {
++ 	    // User code can check isOpen()
++ 	    m_isOpen = false;
++ 	    return;
++ 	}
++ 	
++ #endif
+      } else {
+  	// cppcheck-suppress duplicateExpression
+  	if (!m_filep->open(m_filename)) {
+diff -rcNB verilator-3.880/include/verilated_vcd_c.h verilator-3.880.new/include/verilated_vcd_c.h
+*** verilator-3.880/include/verilated_vcd_c.h	2015-11-28 15:36:06.000000000 -0800
+--- verilator-3.880.new/include/verilated_vcd_c.h	2016-03-04 10:07:41.709777200 -0800
+***************
+*** 41,51 ****
+  class VerilatedVcdFile {
+  private:
+      int			m_fd;		///< File descriptor we're writing to
+  public:
+      // METHODS
+!     VerilatedVcdFile() : m_fd(0) {}
+      virtual ~VerilatedVcdFile() {}
+      virtual bool open(const string& name);
+      virtual void close();
+      virtual ssize_t write(const char* bufp, ssize_t len);
+  };
+--- 41,55 ----
+  class VerilatedVcdFile {
+  private:
+      int			m_fd;		///< File descriptor we're writing to
++ #ifndef _WIN32
++     int                 m_pid;
++ #endif
+  public:
+      // METHODS
+!     VerilatedVcdFile();
+      virtual ~VerilatedVcdFile() {}
+      virtual bool open(const string& name);
++     virtual bool popen(const string& name);
+      virtual void close();
+      virtual ssize_t write(const char* bufp, ssize_t len);
+  };
