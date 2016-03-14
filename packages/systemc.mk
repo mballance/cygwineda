@@ -41,6 +41,7 @@ $(BUILD_DIR)/systemc.build : $(SYSTEMC_SRC_PKG) $(MKDIRS)
 	$(Q)cd $(SYSTEMC_BUILDDIR) ; $(MAKE)
 	$(Q)echo "Installing $(SYSTEMC_SRC_PKG)"
 	$(Q)cd $(SYSTEMC_BUILDDIR) ; $(MAKE) install
+	$(Q)rm -rf $(SYSTEMC_BUILDDIR)
 	$(Q)touch $@
 	
 systemc : $(SYSTEMC_PKG)

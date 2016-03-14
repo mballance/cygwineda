@@ -41,6 +41,7 @@ $(BUILD_DIR)/gtkwave.build : $(GTKWAVE_SRC_PKG) $(MKDIRS)
 	$(Q)cd $(GTKWAVE_BUILDDIR) ; $(MAKE)
 	$(Q)echo "Installing $(GTKWAVE_PKGNAME)"
 	$(Q)cd $(GTKWAVE_BUILDDIR) ; $(MAKE) install
+	$(Q)rm -rf $(GTKWAVE_BUILDDIR)
 	$(Q)touch $@
 	
 gtkwave : $(GTKWAVE_PKG)
