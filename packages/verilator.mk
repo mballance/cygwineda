@@ -30,7 +30,8 @@ $(VERILATOR_PKG) : $(BUILD_DIR)/verilator.build
 	$(Q)cd $(VERILATOR_PKG_DIR) ; $(TARBZ) $@ *
 	$(Q)rm -rf $(VERILATOR_PKG_DIR)
 
-$(BUILD_DIR)/verilator.build : $(VERILATOR_SRC_PKG) $(PKGS_DIR)/verilator.patch $(MKDIRS)
+$(BUILD_DIR)/verilator.build : $(VERILATOR_SRC_PKG) $(PKGS_DIR)/verilator.patch 
+	$(Q)$(MKDIRS)
 	$(Q)echo "Unpacking $(VERILATOR_PKGNAME)"
 	$(Q)rm -rf $(VERILATOR_BUILDDIR)
 	$(Q)cd $(BUILD_DIR) ; $(UNTARGZ) $(VERILATOR_SRC_PKG)
@@ -51,7 +52,7 @@ $(BUILD_DIR)/verilator.build : $(VERILATOR_SRC_PKG) $(PKGS_DIR)/verilator.patch 
 	$(Q)cd $(VERILATOR_BUILDDIR) ; $(MAKE)
 	$(Q)echo "Installing $(VERILATOR_PKGNAME)"
 	$(Q)cd $(VERILATOR_BUILDDIR) ; $(MAKE) install
-	$(Q)rm -rf $(VERILATOR_BUILDDIR)
+#	$(Q)rm -rf $(VERILATOR_BUILDDIR)
 	$(Q)touch $@
 	
 verilator : $(VERILATOR_PKG)

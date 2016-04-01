@@ -15,7 +15,8 @@ CORE_PACKAGE_NAMES += gtkwave
 else
 
 # Rules for packages
-$(GTKWAVE_SRC_PKG) : $(MKDIRS)
+$(GTKWAVE_SRC_PKG) : 
+	$(Q)$(MKDIRS)
 	$(Q)echo "Download $(GTKWAVE_URL)"
 	$(Q)if test ! -d `dirname $@`; then mkdir -p `dirname $@`; fi
 	$(Q)$(WGET) -O $@ $(GTKWAVE_URL)
@@ -30,7 +31,8 @@ $(GTKWAVE_PKG) : $(BUILD_DIR)/gtkwave.build
 	$(Q)cd $(GTKWAVE_PKG_DIR) ; $(TARBZ) $@ *
 	$(Q)rm -rf $(GTKWAVE_PKG_DIR)
 
-$(BUILD_DIR)/gtkwave.build : $(GTKWAVE_SRC_PKG) $(MKDIRS)
+$(BUILD_DIR)/gtkwave.build : $(GTKWAVE_SRC_PKG) 
+	$(Q)$(MKDIRS)
 	$(Q)echo "Unpacking $(GTKWAVE_PKGNAME)"
 	$(Q)rm -rf $(GTKWAVE_BUILDDIR)
 	$(Q)cd $(BUILD_DIR) ; $(UNTARGZ) $(GTKWAVE_SRC_PKG)
@@ -41,7 +43,7 @@ $(BUILD_DIR)/gtkwave.build : $(GTKWAVE_SRC_PKG) $(MKDIRS)
 	$(Q)cd $(GTKWAVE_BUILDDIR) ; $(MAKE)
 	$(Q)echo "Installing $(GTKWAVE_PKGNAME)"
 	$(Q)cd $(GTKWAVE_BUILDDIR) ; $(MAKE) install
-	$(Q)rm -rf $(GTKWAVE_BUILDDIR)
+#	$(Q)rm -rf $(GTKWAVE_BUILDDIR)
 	$(Q)touch $@
 	
 gtkwave : $(GTKWAVE_PKG)

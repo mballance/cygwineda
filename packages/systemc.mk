@@ -15,7 +15,8 @@ CORE_PACKAGE_NAMES += systemc
 else
 
 # Rules for packages
-$(SYSTEMC_SRC_PKG) : $(MKDIRS)
+$(SYSTEMC_SRC_PKG) : 
+	$(Q)$(MKDIRS)
 	$(Q)echo "Download $(SYSTEMC_SRC_PKG)"
 	$(Q)if test ! -d `dirname $@`; then mkdir -p `dirname $@`; fi
 	$(Q)$(WGET) -O $@ $(SYSTEMC_URL)
@@ -31,7 +32,8 @@ $(SYSTEMC_PKG) : $(BUILD_DIR)/systemc.build
 	$(Q)cd $(SYSTEMC_PKG_DIR) ; $(TARBZ) $@ *
 	$(Q)rm -rf $(SYSTEMC_PKG_DIR)
 
-$(BUILD_DIR)/systemc.build : $(SYSTEMC_SRC_PKG) $(MKDIRS)
+$(BUILD_DIR)/systemc.build : $(SYSTEMC_SRC_PKG) 
+	$(Q)$(MKDIRS)
 	$(Q)echo "Unpacking $(SYSTEMC_SRC_PKG)"
 	$(Q)rm -rf $(SYSTEMC_BUILDDIR)
 	$(Q)cd $(BUILD_DIR) ; $(UNTARGZ) $(SYSTEMC_SRC_PKG)
@@ -41,7 +43,7 @@ $(BUILD_DIR)/systemc.build : $(SYSTEMC_SRC_PKG) $(MKDIRS)
 	$(Q)cd $(SYSTEMC_BUILDDIR) ; $(MAKE)
 	$(Q)echo "Installing $(SYSTEMC_SRC_PKG)"
 	$(Q)cd $(SYSTEMC_BUILDDIR) ; $(MAKE) install
-	$(Q)rm -rf $(SYSTEMC_BUILDDIR)
+#	$(Q)rm -rf $(SYSTEMC_BUILDDIR)
 	$(Q)touch $@
 	
 systemc : $(SYSTEMC_PKG)
